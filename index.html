@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hà Nội - Hành Trình 100 Năm | Đồ Họa Thông Tin Tương Tác</title>
+    <style>
+        /* --- THIẾT LẬP NỀN SÁNG VÀ HỆ MÀU SẮC THEO ẢNH MẪU --- */
+        :root {
+            --nen-toi-sau-tham: #f9fbf9;
+            --nen-hop-khoi: #ffffff;
+            --xanh-luc-bao-neon: #126330;
+            --xanh-mint-neon: #1c8845;
+            --vang-di-san: #d36a00;
+            --chu-trang: #111111;
+            --chu-xam-nhat: #444444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--nen-toi-sau-tham);
+            color: var(--chu-trang);
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        /* --- PHÂN KHÚC KHUNG CHỨA TỔNG THỂ --- */
+        .khung-chua-chinh {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tieu-de-sieu-pham {
+            position: relative;
+            width: 100%;
+            height: 380px; /* Độ cao lý tưởng hiển thị phong cảnh Hồ Gươm / Cầu Long Biên */
+            border-radius: 16px;
+            margin-bottom: 45px;
+            text-align: center;
+            padding: 120px;
+            border-bottom: 2px dashed rgba(18, 99, 48, 0.3);
+            margin-bottom: 40px;
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.192) 100%),url('hanoiibg.png');
+            background-size: cover;
+            background-position: top center;
+            border-radius: 16px;
+            color: white;
+            box-shadow: inset 0 0 0 1000px rgba(18, 99, 48, 0.5); /* Thêm lớp phủ mờ để chữ dễ đọc */
+        }
+
+
+        .tieu-de-sieu-pham h1 {
+            font-size: 3rem;
+            color: #ffffff;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .tieu-de-sieu-pham p {
+            color: #ffd700;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+            font-weight: bold;
+        }
+
+        .khoi-mo-dun {
+            background-color: var(--nen-hop-khoi);
+            border: 1px solid rgba(18, 99, 48, 0.15);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 50px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .tieu-de-khoi {
+            font-size: 1.6rem;
+            color: var(--xanh-luc-bao-neon);
+            margin-bottom: 25px;
+            border-left: 4px solid var(--vang-di-san);
+            padding-left: 15px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* --- Ý 1: BIỂU ĐỒ ĐƯỜNG TUYẾN TÍNH TƯƠNG TÁC BIẾN HÓA SỐ LIỆU --- */
+        .khung-bieu-do {
+            position: relative;
+            height: 400px;
+            margin: 40px 0 40px 0;
+            display: block;
+            padding: 0;
+        }
+
+        .chu-thich-bieu-do {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 30px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #444;
+            flex-wrap: wrap;
+        }
+
+        .chu-thich-bieu-do div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chu-thich-bieu-do span {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .nut-toa-do {
+            width: 20px;
+            height: 20px;
+            background-color: #ffffff;
+            border: 4px solid var(--xanh-luc-bao-neon);
+            border-radius: 50%;
+            position: absolute;
+            z-index: 2;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translate(-50%, -50%);
+        }
+
+        .nut-toa-do:hover, .nut-toa-do.kich-hoat {
+            transform: translate(-50%, -50%) scale(1.6);
+            border-color: var(--vang-di-san);
+            box-shadow: 0 0 10px rgba(211, 106, 0, 0.5);
+            z-index: 20;
+        }
+
+        .hop-thoai-thong-minh {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            background: rgba(255, 255, 255, 0.98);
+            border: 2px solid var(--xanh-mint-neon);
+            border-radius: 10px;
+            padding: 15px;
+            width: 250px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .nut-toa-do:hover .hop-thoai-thong-minh, .nut-toa-do.kich-hoat .hop-thoai-thong-minh {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
+            bottom: 35px;
+        }
+
+        .thau-kinh-so {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--vang-di-san);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .nhan-thoi-gian {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--chu-trang);
+            font-weight: bold;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        /* --- Ý 2: VŨ ĐIỆU BIỂU TƯỢNG XUẤT HIỆN TUẦN TỰ GIẢI NGHẼN --- */
+        .luoi-bieu-tuong {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .the-giai-nghen {
+            background-color: var(--nen-hop-khoi);
+            border: 1px solid rgba(18, 99, 48, 0.15);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .the-giai-nghen.hien-lo {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .khoi-hinh-ve-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            background: #e8f5e9;
+            border: 2px solid var(--xanh-luc-bao-neon);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none;
+        }
+
+        .khoi-hinh-ve-icon svg {
+            width: 35px;
+            height: 35px;
+            fill: var(--xanh-luc-bao-neon);
+        }
+
+        .the-giai-nghen h3 {
+            color: var(--xanh-luc-bao-neon);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .the-giai-nghen p {
+            color: var(--chu-xam-nhat);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* --- Ý 3: CHUYẾN TÀU THẾ KỶ XUYÊN QUA BỐN CHẶNG ĐƯỜNG QUY HOẠCH --- */
+        .khung-duong-ray-thoi-gian {
+            position: relative;
+            margin: 80px 0 40px;
+            padding: 20px 0;
+        }
+
+        .duong-ray-the-ky {
+            height: 6px;
+            background: #d1d8e0;
+            border-radius: 3px;
+            position: relative;
+            width: 100%;
+        }
+
+        .tuyen-sang-chuyen-dong {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--xanh-luc-bao-neon), var(--vang-di-san));
+            box-shadow: none;
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+
+        .bieu-tuong-con-tau {
+            position: absolute;
+            top: -15px;
+            left: 0%;
+            width: 50px;
+            height: 34px;
+            background-color: var(--xanh-luc-bao-neon);
+            border-radius: 6px 20px 6px 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transform: translateX(-50%);
+            transition: left 0.1s linear;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            border: 2px solid #ffffff;
+        }
+
+        .bieu-tuong-con-tau::after {
+            content: "•••";
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .tram-ga-dung {
+            position: absolute;
+            top: -7px;
+            width: 20px;
+            height: 20px;
+            background-color: #ffffff;
+            border: 4px solid #d1d8e0;
+            border-radius: 50%;
+            z-index: 4;
+            transform: translateX(-50%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tram-ga-dung.da-qua {
+            border-color: var(--xanh-luc-bao-neon);
+            background-color: var(--xanh-luc-bao-neon);
+            box-shadow: none;
+        }
+
+        .ga-1 { left: 10%; }
+        .ga-2 { left: 38%; }
+        .ga-3 { left: 66%; }
+        .ga-4 { left: 94%; }
+
+        .nhan-ga-dung {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--xanh-luc-bao-neon);
+            font-weight: bold;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .hop-an-sinh-bung-no {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background-color: #ffffff;
+            border: 1px solid rgba(18, 99, 48, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            width: 260px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 3;
+        }
+
+        .hop-an-sinh-bung-no.hien-thi {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+            border-color: var(--vang-di-san);
+        }
+
+        .hop-an-sinh-bung-no h4 {
+            color: var(--xanh-luc-bao-neon);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            border-bottom: 1px dashed rgba(18, 99, 48, 0.2);
+            padding-bottom: 5px;
+        }
+
+        .hop-an-sinh-bung-no p {
+            color: var(--chu-xam-nhat);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* --- Ý 4: BẢN ĐỒ QUY HOẠCH CẢM ỨNG VÙNG POP-UP THÔNG TIN --- */
+        .khung-ban-do-so {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .khung-ban-do-so {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sa-ban-ma-tran {
+            background-color: #e8f5e9;
+            border: 2px dashed rgba(18, 99, 48, 0.3);
+            border-radius: 16px;
+            height: 400px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .luoi-toa-do-nguon {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(18, 99, 48, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(18, 99, 48, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .vung-khong-gian-so {
+            position: absolute;
+            border-radius: 50%;
+            background: cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #ffffff;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .vung-loi {
+            width: 100px;
+            height: 100px;
+            background-color: rgba(211, 106, 0, 0.85);
+            top: 38%;
+            left: 40%;
+            border: 2px solid #b35900;
+        }
+
+        .vung-bac {
+            width: 110px;
+            height: 110px;
+            background-color: rgba(18, 99, 48, 0.85);
+            top: 10%;
+            left: 43%;
+            border: 2px solid #0d4a23;
+        }
+
+        .vung-tay {
+            width: 120px;
+            height: 120px;
+            background-color: rgba(44, 162, 95, 0.85);
+            top: 45%;
+            left: 15%;
+            border: 2px solid #207a47;
+        }
+
+        .vung-nam {
+            width: 115px;
+            height: 115px;
+            background-color: rgba(102, 176, 50, 0.85);
+            top: 65%;
+            left: 50%;
+            border: 2px solid #4a8223;
+        }
+
+        .vung-khong-gian-so:hover, .vung-khong-gian-so.phat-sang {
+            transform: scale(1.15);
+            box-shadow: 0 0 15px rgba(18, 99, 48, 0.5);
+            z-index: 10;
+        }
+
+        .cua-so-thong-minh {
+            background-color: #ffffff;
+            border: 2px solid var(--xanh-luc-bao-neon);
+            border-radius: 12px;
+            padding: 25px;
+            height: 100%;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .cua-so-thong-minh h3 {
+            color: var(--vang-di-san);
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(18, 99, 48, 0.2);
+            padding-bottom: 8px;
+        }
+
+        .cua-so-thong-minh p {
+            color: var(--chu-xam-nhat);
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .huong-dan-cuon {
+            text-align: center;
+            color: var(--chu-xam-nhat);
+            font-style: italic;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        .huy-hieu-vien-thuoc {
+            display: inline-block;
+            background-color: #2b5e2b; /* Màu nền xanh lá sẫm */
+            color: #edbe22; /* Chữ màu vàng */
+            border: 2px solid #c8e6c9; /* Viền xanh sáng/trắng */
+            border-radius: 50px;
+            padding: 8px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="khung-chua-chinh">
+
+        <div class="tieu-de-sieu-pham">
+            <h1>Hà Nội - Hành Trình 100 Năm</h1>
+            <div class="huy-hieu-vien-thuoc">Quy hoạch Thủ đô Hà Nội theo Quyết định 2512/QĐ-TTg</div>
+        </div>
+
+        <div class="khoi-mo-dun">
+            <h2 class="tieu-de-khoi">1. Lộ Trình Phát Triển Kinh Tế Vĩ Mô</h2>
+            <p style="color: var(--chu-xam-nhat); margin-bottom: 20px;">* Hướng dẫn: Di chuột hoặc chạm vào các điểm nút tọa độ để kích hoạt thấu kính dữ liệu nhảy số vĩ mô.</p>
+            
+            <div class="chu-thich-bieu-do">
+                <div><span style="background-color: #126330;"></span> TỐC ĐỘ TĂNG TRƯỞNG GRDP (%/năm)</div>
+                <div><span style="background-color: #d36a00;"></span> QUY MÔ GRDP (tỷ USD)</div>
+                <div><span style="background-color: #111111;"></span> GRDP BÌNH QUÂN ĐẦU NGƯỜI (USD/người)</div>
+            </div>
+            
+            <div class="khung-bieu-do">
+                <!-- Đường Line SVG -->
+                <svg width="100%" height="100%" viewBox="0 0 1000 300" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; z-index: 1;">
+                    <!-- Lưới ngang -->
+                    <line x1="0" y1="300" x2="1000" y2="300" stroke="#ccc" stroke-width="2"/>
+                    <line x1="0" y1="225" x2="1000" y2="225" stroke="#eee" stroke-width="1" stroke-dasharray="5,5"/>
+                    <line x1="0" y1="150" x2="1000" y2="150" stroke="#eee" stroke-width="1" stroke-dasharray="5,5"/>
+                    <line x1="0" y1="75" x2="1000" y2="75" stroke="#eee" stroke-width="1" stroke-dasharray="5,5"/>
+                    <line x1="0" y1="0" x2="1000" y2="0" stroke="#eee" stroke-width="1" stroke-dasharray="5,5"/>
+
+                    <!-- Đường Xanh Lá Đậm: Tốc độ -->
+                    <polyline points="125,65 375,65 625,180 875,204" fill="none" stroke="#126330" stroke-width="4"/>
+                    <!-- Đường Cam: Quy mô -->
+                    <polyline points="125,283 375,245 625,136" fill="none" stroke="#d36a00" stroke-width="4"/>
+                    <line x1="625" y1="136" x2="875" y2="60" stroke="#d36a00" stroke-width="4" stroke-dasharray="8,8"/>
+                    <!-- Đường Đen Xám: Bình quân -->
+                    <polyline points="125,288 375,250 625,186 875,80" fill="none" stroke="#111111" stroke-width="4"/>
+                </svg>
+
+                <!-- CÁC ĐIỂM DỮ LIỆU -->
+                
+                <!-- Line 1: Tốc độ (Xanh lá đậm) -->
+                <div class="nut-toa-do" style="left: 12.5%; top: calc(65/300 * 100%); border-color: #126330;">
+                    <span class="nhan-thoi-gian" style="top: -25px; bottom: auto; color: #126330;">>11%</span>
+                    <div class="hop-thoai-thong-minh">
+                        <span class="thau-kinh-so" data-muc-tieu="11" data-tien-to="> " data-don-vi="%" style="color: #126330">> 0%</span>
+                        <p style="color: #111;">Tốc độ tăng trưởng GRDP (%/năm)</p>
+                    </div>
+                </div>
+                <div class="nut-toa-do" style="left: 37.5%; top: calc(65/300 * 100%); border-color: #126330;">
+                    <span class="nhan-thoi-gian" style="top: -25px; bottom: auto; color: #126330;">>11%</span>
+                    <div class="hop-thoai-thong-minh">
+                        <span class="thau-kinh-so" data-muc-tieu="11" data-tien-to="> " data-don-vi="%" style="color: #126330">> 0%</span>
+                        <p style="color: #111;">Tốc độ tăng trưởng GRDP (%/năm)</p>
+                    </div>
+                </div>
+                <div class="nut-toa-do" style="left: 87.5%; top: calc(204/300 * 100%); border-color: #126330;">
+                    <span class="nhan-thoi-gian" style="top: -25px; bottom: auto; color: #126330;">4-5%</span>
+                    <div class="hop-thoai-thong-minh">
+                        <span class="thau-kinh-so" data-muc-tieu="5" data-tien-to="~ " data-don-vi="%" style="color: #126330">~ 0%</span>
+                        <p style="color: #111;">Tốc độ tăng trưởng GRDP (%/năm)</p>
+                    </div>
+                </div>
+
+                <!-- Line 2: Quy mô (Cam) -->
+                <div class="nut-toa-do" style="left: 12.5%; top: calc(283/300 * 100%); border-color: #d36a00;">
+                    <span class="nhan-thoi-gian" style="top: -28px; bottom: auto; color: #d36a00; font-size: 0.8rem; line-height: 1.2;">~200<br>tỷ USD</span>
+                    <div class="hop-thoai-thong-minh">
+                        <span class="thau-kinh-so" data-muc-tieu="200" data-tien-to="~ " data-don-vi=" tỷ USD" style="color: #d36a00">~ 0 tỷ USD</span>
+                        <p style="color: #111;">Quy mô GRDP</p>
+                    </div>
+                </div>
+                <div class="nut-toa-do" style="left: 37.5%; top: calc(245/300 * 100%); border-color: #d36a00;">
+                    <span class="nhan-thoi-gian" style="top: -28px; bottom: auto; color: #d36a00; font-size: 0.8rem; line-height: 1.2;">~640<br>tỷ USD</span>
+                    <div class="hop-thoai-thong-minh">
+                        <span class="thau-kinh-so" data-muc-tieu="640" data-tien-to="~ " data-don-vi=" tỷ USD" style="color: #d36a00">~ 0 tỷ USD</span>
+                        <p style="color: #111;">Quy mô GRDP</p>
+                    </div>
+                </div>
+                <div class="nut-toa-do" style="left: 62.5%; top: calc(136/300 * 100%); border-color: #d36a00;">
+                    <span class="nhan-thoi-gian" style="top: -28px; bottom: auto; color: #d36a00; font-size: 0.8rem; line-height: 1.2;">~1.920<br>tỷ USD</span>
+                    <div class="hop-thoai-thong-minh">
+                        <span class="thau-kinh-so" data-muc-tieu="1920" data-tien-to="~ " data-don-vi=" tỷ USD" style="color: #d36a00">~ 0 tỷ USD</span>
+                        <p style="color: #111;">Quy mô GRDP</p>
+                    </div>
+                </div>
+                <div class="nut-toa-do" style="left: 87.5%; top: calc(60/300 * 100%); border-color: #d36a00; border-width: 0; background: none; width: 60px; height: 60px;">
+                    <div style="background-color: #fff9c4; border: 2px solid #d36a00; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; color: #d36a00; box-shadow: 0 0 10px rgba(211,106,0,0.3);">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="#d36a00"><path d="M12 2L2 22h20L12 2zm0 3.99L19.53 19H4.47L12 5.99z"/></svg>
+                    </div>
+                    <span class="nhan-thoi-gian" style="top: -15px; right: -75px; left: auto; transform: none; color: #d36a00; text-align: left; line-height: 1.2; white-space: nowrap;">TẦM NHÌN<br>100 NĂM</span>
+                    <div class="hop-thoai-thong-minh" style="bottom: 70px; width: 260px; padding: 12px; border: 2px solid #126330; border-radius: 8px; white-space: normal; text-align: center;">
+                        <p style="color: #111; font-size: 0.95rem; margin: 0; line-height: 1.5;">Hà Nội là thành phố <strong style="color: #126330;">Thịnh vượng - Hài hòa - Văn hiến - Bản sắc</strong></p>
+                    </div>
+                </div>
+
+                <!-- Line 3: Bình quân (Đen xám) -->
+                <div class="nut-toa-do" style="left: 12.5%; top: calc(288/300 * 100%); border-color: #111111;">
+                    <div class="hop-thoai-thong-minh">
+                        <p style="color: #111;">GRDP bình quân đầu người</p>
+                    </div>
+                </div>
+                <div class="nut-toa-do" style="left: 37.5%; top: calc(250/300 * 100%); border-color: #111111;">
+                    <span class="nhan-thoi-gian" style="top: 25px; bottom: auto; color: #111111; font-size: 0.8rem; line-height: 1.2;">42.000<br>USD</span>
+                    <div class="hop-thoai-thong-minh">
+                        <span class="thau-kinh-so" data-muc-tieu="42000" data-tien-to="" data-don-vi=" USD" style="color: #111111">0 USD</span>
+                        <p style="color: #111;">GRDP bình quân (USD/người)</p>
+                    </div>
+                </div>
+                <div class="nut-toa-do" style="left: 62.5%; top: calc(186/300 * 100%); border-color: #111111;">
+                    <span class="nhan-thoi-gian" style="top: 25px; bottom: auto; color: #111111; font-size: 0.8rem; line-height: 1.2;">95.000<br>USD</span>
+                    <div class="hop-thoai-thong-minh">
+                        <span class="thau-kinh-so" data-muc-tieu="95000" data-tien-to="" data-don-vi=" USD" style="color: #111111">0 USD</span>
+                        <p style="color: #111;">GRDP bình quân (USD/người)</p>
+                    </div>
+                </div>
+                <div class="nut-toa-do" style="left: 87.5%; top: calc(80/300 * 100%); border-color: #111111;">
+                    <span class="nhan-thoi-gian" style="top: 25px; bottom: auto; color: #111111; font-size: 0.8rem; line-height: 1.2;">200.000<br>USD</span>
+                    <div class="hop-thoai-thong-minh">
+                        <span class="thau-kinh-so" data-muc-tieu="200000" data-tien-to="" data-don-vi=" USD" style="color: #111111">0 USD</span>
+                        <p style="color: #111;">GRDP bình quân (USD/người)</p>
+                    </div>
+                </div>
+
+                <!-- Labels X-Axis -->
+                <div style="position: absolute; bottom: -40px; left: 12.5%; transform: translateX(-50%); font-weight: bold; color: #444;">2026 - 2035</div>
+                <div style="position: absolute; bottom: -40px; left: 62.5%; transform: translateX(-50%); font-weight: bold; color: #444;">2046 - 2065</div>
+                <div style="position: absolute; bottom: -40px; left: 87.5%; transform: translateX(-50%); font-weight: bold; color: #444;">SAU 2085</div>
+
+            </div>
+
+            <!-- BẢNG DỰ BÁO DÂN SỐ -->
+            <div class="bang-dan-so" style="border: 2px solid #c8e6c9; border-radius: 20px; display: flex; justify-content: space-between; align-items: stretch; background-color: #ffffff; padding: 40px 20px; margin-top: 100px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                
+                <!-- Cột 1 -->
+                <div class="cot-dan-so" style="flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative;">
+                    <!-- Vòng tròn icon -->
+                    <div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ebd07b; background-color: #f9fbf9; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="#126330"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </div>
+                    <!-- Badge năm -->
+                    <div style="background-color: #126330; color: white; border-radius: 25px; padding: 8px 25px; font-weight: bold; margin-bottom: 20px; font-size: 1rem;">ĐẾN NĂM 2035</div>
+                    <p style="color: #666; font-size: 0.95rem; margin-bottom: 5px;">Khoảng</p>
+                    <div style="font-size: 3rem; font-weight: 800; color: #126330; line-height: 1;">14-15</div>
+                    <p style="color: #666; font-size: 0.95rem; margin-top: 5px;">triệu người</p>
+                    
+                    <!-- Đường kẻ dọc -->
+                    <div style="position: absolute; right: 0; top: 10%; height: 80%; width: 1px; border-right: 1.5px dashed #c8e6c9;"></div>
+                </div>
+
+                <!-- Cột 2 -->
+                <div class="cot-dan-so" style="flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative;">
+                    <!-- Vòng tròn icon -->
+                    <div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ebd07b; background-color: #f9fbf9; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="#126330">
+                            <path d="M12 13c1.66 0 2.99-1.34 2.99-3S13.66 7 12 7c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-6 0c1.66 0 2.99-1.34 2.99-3S7.66 7 6 7C4.34 7 3 8.34 3 10s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V21h14v-2.5c0-2.33-4.67-3.5-7-3.5zm6 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V21h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" fill="#ebd07b"/>
+                        </svg>
+                    </div>
+                    <!-- Badge năm -->
+                    <div style="background-color: #126330; color: white; border-radius: 25px; padding: 8px 25px; font-weight: bold; margin-bottom: 20px; font-size: 1rem;">ĐẾN NĂM 2045</div>
+                    <p style="color: #666; font-size: 0.95rem; margin-bottom: 5px;">Dự báo khoảng</p>
+                    <div style="font-size: 3rem; font-weight: 800; color: #126330; line-height: 1;">15-16</div>
+                    <p style="color: #666; font-size: 0.95rem; margin-top: 5px;">triệu người</p>
+                    
+                    <!-- Đường kẻ dọc -->
+                    <div style="position: absolute; right: 0; top: 10%; height: 80%; width: 1px; border-right: 1.5px dashed #c8e6c9;"></div>
+                </div>
+
+                <!-- Cột 3 -->
+                <div class="cot-dan-so" style="flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative;">
+                    <!-- Vòng tròn icon -->
+                    <div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ebd07b; background-color: #f9fbf9; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="#126330">
+                            <path d="M15 11V5l-3-3-3 3v2H3v14h18V11h-6zm-8 8H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V9h2v2zm6 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V9h2v2zm0-4h-2V5h2v2zm6 12h-2v-2h2v2zm0-4h-2v-2h2v2z" fill="#ebd07b" opacity="0.8"/>
+                            <path d="M16 15c1.66 0 2.99-1.34 2.99-3S17.66 9 16 9c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 9 8 9C6.34 9 5 10.34 5 12s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V23h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V23h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                        </svg>
+                    </div>
+                    <!-- Badge năm -->
+                    <div style="background-color: #126330; color: white; border-radius: 25px; padding: 8px 25px; font-weight: bold; margin-bottom: 20px; font-size: 1rem;">ĐẾN NĂM 2065</div>
+                    <p style="color: #666; font-size: 0.95rem; margin-bottom: 5px;">Dự báo khoảng</p>
+                    <div style="font-size: 3rem; font-weight: 800; color: #126330; line-height: 1;">17-19</div>
+                    <p style="color: #666; font-size: 0.95rem; margin-top: 5px;">triệu người</p>
+                    
+                    <!-- Đường kẻ dọc -->
+                    <div style="position: absolute; right: 0; top: 10%; height: 80%; width: 1px; border-right: 1.5px dashed #c8e6c9;"></div>
+                </div>
+
+                <!-- Cột 4 -->
+                <div class="cot-dan-so" style="flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center;">
+                    <!-- Vòng tròn icon -->
+                    <div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #ebd07b; background-color: #f9fbf9; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="#126330">
+                            <path d="M12 11c1.66 0 2.99-1.34 2.99-3S13.66 5 12 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-5.5 0c1.66 0 2.99-1.34 2.99-3S8.16 5 6.5 5 3.5 6.34 3.5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm5.5 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5zm5.5-2c1.66 0 2.99-1.34 2.99-3S19.16 5 17.5 5 14.5 6.34 14.5 8s1.34 3 3 3z"/>
+                        </svg>
+                    </div>
+                    <!-- Badge năm -->
+                    <div style="background-color: #126330; color: white; border-radius: 25px; padding: 8px 15px; font-weight: bold; margin-bottom: 20px; font-size: 0.9rem; line-height: 1.4;">GIAI ĐOẠN DÀI HẠN ĐẾN<br>NĂM 2085 VÀ XA HƠN</div>
+                    <p style="color: #666; font-size: 0.95rem; margin-bottom: 5px;">Khống chế không quá</p>
+                    <div style="font-size: 3rem; font-weight: 800; color: #126330; line-height: 1;">20</div>
+                    <p style="color: #666; font-size: 0.95rem; margin-top: 5px;">triệu người</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="khoi-mo-dun" id="phan-doan-giai-nghen" style="background: none; border: none; box-shadow: none; padding: 0;">
+            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                <div style="width: 45px; height: 45px; border-radius: 50%; background-color: #2b5e2b; color: white; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; margin-right: 15px; flex-shrink: 0;">2</div>
+                <h2 style="font-size: 1.3rem; color: #2b5e2b; text-transform: uppercase; font-weight: bold; margin: 0; letter-spacing: 0.5px;">CHIẾN LƯỢC HÓA GIẢI ĐIỂM NGHẼN ĐÔ THỊ</h2>
+            </div>
+            <p style="color: var(--chu-xam-nhat); margin-bottom: 30px;">* Hướng dẫn: Cuộn chuột xuống dưới để dẫn dắt con tàu di chuyển qua 4 chặng chiến lược.</p>
+            
+            <div class="khung-4-box-chien-luoc" style="position: relative; width: 100%; display: flex; justify-content: space-between; align-items: stretch; gap: 10px; z-index: 2;">
+                <!-- Box 1 -->
+                <div class="box-cl" style="flex: 1; background: rgba(250, 253, 250, 0.95); border: 2px solid #a8cfa8; border-radius: 15px; padding: 25px 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s;">
+                    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #c8e6c9; padding-bottom: 15px;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="#126330" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 10px;"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                        <h3 style="color: #126330; font-size: 1.05rem; margin: 0; font-weight: bold; text-transform: uppercase;">GỠ ĐIỂM NGHẼN</h3>
+                    </div>
+                    <ul style="list-style-type: none; padding: 0; margin: 0;">
+                        <li style="color: #333; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Hoàn thiện khung hạ tầng</li>
+                        <li style="color: #333; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Xử lý ngập úng</li>
+                        <li style="color: #333; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Hồi sinh các dòng sông</li>
+                        <li style="color: #333; font-size: 0.85rem; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Khởi công đường sắt vùng</li>
+                    </ul>
+                </div>
+                
+                <!-- Arrow -->
+                <div style="display: flex; align-items: center; color: #7dbf7d;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+
+                <!-- Box 2 -->
+                <div class="box-cl" style="flex: 1; background: rgba(250, 253, 250, 0.95); border: 2px solid #a8cfa8; border-radius: 15px; padding: 25px 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s;">
+                    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #c8e6c9; padding-bottom: 15px;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="#126330" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 10px;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        <h3 style="color: #126330; font-size: 1.05rem; margin: 0; font-weight: bold; text-transform: uppercase;">MỞ RỘNG<br>KHÔNG GIAN</h3>
+                    </div>
+                    <ul style="list-style-type: none; padding: 0; margin: 0;">
+                        <li style="color: #333; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Hình thành các cực tăng trưởng mới</li>
+                        <li style="color: #333; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Kinh tế tri thức</li>
+                        <li style="color: #333; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Thành phố thông minh</li>
+                        <li style="color: #333; font-size: 0.85rem; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Trung tâm đổi mới sáng tạo khu vực</li>
+                    </ul>
+                </div>
+                
+                <!-- Arrow -->
+                <div style="display: flex; align-items: center; color: #7dbf7d;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+
+                <!-- Box 3 -->
+                <div class="box-cl" style="flex: 1; background: rgba(250, 253, 250, 0.95); border: 2px solid #a8cfa8; border-radius: 15px; padding: 25px 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s;">
+                    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #c8e6c9; padding-bottom: 15px;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="#126330" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 10px;"><path d="M9 18h6M10 22h4M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        <h3 style="color: #126330; font-size: 1.05rem; margin: 0; font-weight: bold; text-transform: uppercase;">ĐỔI MỚI<br>SÁNG TẠO</h3>
+                    </div>
+                    <ul style="list-style-type: none; padding: 0; margin: 0;">
+                        <li style="color: #333; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Thành phố toàn cầu</li>
+                        <li style="color: #333; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Phát triển bền vững</li>
+                        <li style="color: #333; font-size: 0.85rem; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Văn hiến – Văn minh – Hiện đại – Hạnh phúc</li>
+                    </ul>
+                </div>
+                
+                <!-- Arrow -->
+                <div style="display: flex; align-items: center; color: #7dbf7d;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+
+                <!-- Box 4 -->
+                <div class="box-cl" style="flex: 1; background: rgba(250, 253, 250, 0.95); border: 2px solid #a8cfa8; border-radius: 15px; padding: 25px 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s;">
+                    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #c8e6c9; padding-bottom: 15px;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="#126330" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 10px;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        <h3 style="color: #126330; font-size: 1.05rem; margin: 0; font-weight: bold; text-transform: uppercase;">THÀNH PHỐ<br>TOÀN CẦU</h3>
+                    </div>
+                    <ul style="list-style-type: none; padding: 0; margin: 0;">
+                        <li style="color: #333; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Hội nhập quốc tế sâu rộng</li>
+                        <li style="color: #333; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Đô thị thông minh</li>
+                        <li style="color: #333; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Trung tâm tài chính – thương mại khu vực</li>
+                        <li style="color: #333; font-size: 0.85rem; display: flex; align-items: flex-start;"><span style="color: #126330; margin-right: 8px; font-weight: bold;">•</span> Điểm đến toàn cầu</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Timeline Đường ray -->
+            <div style="position: relative; width: 100%; height: 60px; margin-top: 10px;">
+                <!-- Track -->
+                <div style="position: absolute; top: 50%; left: 0; right: 0; height: 6px; background: #e0e0e0; transform: translateY(-50%); border-radius: 3px;">
+                    <div id="tuyen-tau-phan-2" style="height: 100%; width: 0%; background: #126330; border-radius: 3px; transition: width 0.1s linear;"></div>
+                </div>
+                <!-- Mốc các điểm (tương ứng với 4 box) -->
+                <div style="position: absolute; top: 50%; left: 12.5%; width: 16px; height: 16px; background: #fff; border: 3px solid #126330; border-radius: 50%; transform: translate(-50%, -50%); z-index: 5;"></div>
+                <div style="position: absolute; top: 50%; left: 37.5%; width: 16px; height: 16px; background: #fff; border: 3px solid #126330; border-radius: 50%; transform: translate(-50%, -50%); z-index: 5;"></div>
+                <div style="position: absolute; top: 50%; left: 62.5%; width: 16px; height: 16px; background: #fff; border: 3px solid #126330; border-radius: 50%; transform: translate(-50%, -50%); z-index: 5;"></div>
+                <div style="position: absolute; top: 50%; left: 87.5%; width: 16px; height: 16px; background: #fff; border: 3px solid #126330; border-radius: 50%; transform: translate(-50%, -50%); z-index: 5;"></div>
+                
+                <!-- Con Tàu -->
+                <div id="con-tau-phan-2" style="position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%); width: 45px; height: 45px; background: white; border: 3px solid #126330; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 10; transition: left 0.1s linear;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#126330"><path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h2.23l2-2H14l2 2h2v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.58-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm3.5-7H6V6h5v4zm2 0V6h5v4h-5zm3.5 7c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="khoi-mo-dun" id="khoi-ban-do" style="background: none; border: none; box-shadow: none; padding: 0;">
+            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                <div style="width: 45px; height: 45px; border-radius: 50%; background-color: #2b5e2b; color: white; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; margin-right: 15px; flex-shrink: 0;">3</div>
+                <h2 style="font-size: 1.3rem; color: #2b5e2b; text-transform: uppercase; font-weight: bold; margin: 0; letter-spacing: 0.5px;">BẢN ĐỒ QUY HOẠCH MỚI CỦA HÀ NỘI – ĐA CỰC, KẾT NỐI, BỀN VỮNG</h2>
+            </div>
+            
+            <div class="khung-ban-do-quy-hoach" id="vung-kich-hoat-map" style="position: relative; width: 100%; height: 650px; border-radius: 20px; background: #e9f2eb url('back5.png') center center / cover no-repeat; box-shadow: inset 0 0 150px rgba(255,255,255,0.9); overflow: hidden; border: 1px solid #c8e6c9;">
+                
+                <style>
+                    .popup-cuc {
+                        opacity: 0;
+                        transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                        margin-top: 30px;
+                    }
+                    .popup-cuc.hien-lo {
+                        opacity: 1;
+                        margin-top: 0;
+                    }
+                </style>
+
+                <!-- Top: CỰC PHÍA BẮC NỘI BÀI -->
+                <div class="diem-cuc popup-cuc" style="position: absolute; top: 2%; left: 45%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; z-index: 10;">
+                    <div style="background: rgba(255,255,255,0.95); border: 2px solid #a8cfa8; border-radius: 20px; padding: 25px 20px 15px 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); min-width: 180px; position: relative;">
+                        <div style="width: 60px; height: 60px; background: #f0f4f8; border: 2px solid #2980b9; border-radius: 50%; display: flex; justify-content: center; align-items: center; position: absolute; top: -30px; left: 50%; transform: translateX(-50%);">
+                            <svg width="35" height="35" viewBox="0 0 24 24" fill="#2980b9"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                        </div>
+                        <h3 style="color: #2980b9; font-size: 1rem; margin-bottom: 8px; text-align: center; font-weight: bold;">CỰC PHÍA BẮC<br>NỘI BÀI</h3>
+                        <ul style="list-style-type: none; padding: 0; margin: 0;">
+                            <li style="color: #444; font-size: 0.85rem; margin-bottom: 3px;">• Logistics</li>
+                            <li style="color: #444; font-size: 0.85rem; margin-bottom: 3px;">• Tài chính</li>
+                            <li style="color: #444; font-size: 0.85rem;">• Thương mại tự do</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Left Top: CỰC TÂY BẮC SƠN TÂY -->
+                <!-- Vị trí vòng tròn sáng góc trên bên trái -->
+                <div class="diem-cuc popup-cuc" style="position: absolute; top: 22%; left: 16%; display: flex; align-items: center; z-index: 10;">
+                    <div style="width: 60px; height: 60px; background: #fcf6eb; border: 2px solid #b9770e; border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 2; position: relative; left: 20px;">
+                        <svg width="35" height="35" viewBox="0 0 24 24" fill="#b9770e"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 2.18l6 2.25v4.66c0 3.99-2.3 7.68-6 8.8-3.7-1.12-6-4.81-6-8.8V6.43l6-2.25z"/></svg>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.95); border: 2px solid #ebd07b; border-radius: 20px; padding: 15px 15px 15px 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); min-width: 170px;">
+                        <h3 style="color: #b9770e; font-size: 0.95rem; margin-bottom: 8px; font-weight: bold;">CỰC TÂY BẮC<br>SƠN TÂY - BA VÌ</h3>
+                        <ul style="list-style-type: none; padding: 0; margin: 0;">
+                            <li style="color: #444; font-size: 0.85rem; margin-bottom: 3px;">• Du lịch</li>
+                            <li style="color: #444; font-size: 0.85rem; margin-bottom: 3px;">• Di sản</li>
+                            <li style="color: #444; font-size: 0.85rem;">• Nghỉ dưỡng</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Left Bottom: CỰC PHÍA TÂY HÒA LẠC -->
+                <!-- Vị trí vòng tròn sáng trung tâm lệch trái -->
+                <div class="diem-cuc popup-cuc" style="position: absolute; top: 48%; left: 24%; display: flex; align-items: center; z-index: 10;">
+                    <div style="width: 60px; height: 60px; background: #eaf1ed; border: 2px solid #1e8449; border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 2; position: relative; left: 20px;">
+                        <svg width="35" height="35" viewBox="0 0 24 24" fill="#1e8449"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.95); border: 2px solid #a8cfa8; border-radius: 20px; padding: 15px 15px 15px 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); min-width: 170px;">
+                        <h3 style="color: #1e8449; font-size: 0.95rem; margin-bottom: 8px; font-weight: bold;">CỰC PHÍA TÂY<br>HÒA LẠC</h3>
+                        <ul style="list-style-type: none; padding: 0; margin: 0;">
+                            <li style="color: #444; font-size: 0.85rem; margin-bottom: 3px;">• KHCN</li>
+                            <li style="color: #444; font-size: 0.85rem; margin-bottom: 3px;">• AI</li>
+                            <li style="color: #444; font-size: 0.85rem;">• Đổi mới sáng tạo</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Center: SÔNG HỒNG -->
+                <!-- Vị trí vòng tròn sáng to nhất ở trung tâm rễ -->
+                <div class="diem-cuc popup-cuc" style="position: absolute; top: 43%; left: 52%; transform: translate(-50%, -50%); text-align: center; z-index: 15;">
+                    <div style="background: rgba(255,255,255,0.98); border: 3px solid #ebd07b; border-radius: 40px; padding: 40px 20px 20px 20px; width: 170px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative;">
+                        <div style="width: 70px; height: 70px; background: white; border: 2px solid #ebd07b; border-radius: 50%; display: flex; justify-content: center; align-items: center; position: absolute; top: -35px; left: 50%; transform: translateX(-50%);">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="#d36a00"><path d="M15 11V5l-3-3-3 3v2H3v14h18V11h-6zm-8 8H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V9h2v2zm6 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V9h2v2zm0-4h-2V5h2v2zm6 12h-2v-2h2v2zm0-4h-2v-2h2v2z"/></svg>
+                        </div>
+                        <h3 style="color: #d36a00; font-size: 1.15rem; margin-bottom: 12px; font-weight: 900;">SÔNG HỒNG</h3>
+                        <ul style="list-style-type: none; padding: 0; text-align: left; margin: 0 auto; display: inline-block;">
+                            <li style="color: #b9770e; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">• Tài chính</li>
+                            <li style="color: #b9770e; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">• Văn hóa</li>
+                            <li style="color: #b9770e; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">• Thương mại</li>
+                            <li style="color: #b9770e; font-size: 0.9rem; font-weight: bold;">• Du lịch</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right Top: CỰC PHÍA ĐÔNG GIA LÂM -->
+                <!-- Vị trí vòng tròn sáng bên phải -->
+                <div class="diem-cuc popup-cuc" style="position: absolute; top: 30%; right: 10%; display: flex; align-items: center; flex-direction: row-reverse; z-index: 10;">
+                    <div style="width: 60px; height: 60px; background: #eaf1ed; border: 2px solid #145a32; border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 2; position: relative; right: 20px;">
+                        <svg width="35" height="35" viewBox="0 0 24 24" fill="#145a32"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.95); border: 2px solid #a8cfa8; border-radius: 20px; padding: 15px 35px 15px 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); min-width: 180px; text-align: right;">
+                        <h3 style="color: #145a32; font-size: 0.95rem; margin-bottom: 8px; font-weight: bold;">CỰC PHÍA ĐÔNG<br>GIA LÂM - LONG BIÊN</h3>
+                        <ul style="list-style-type: none; padding: 0; margin: 0;">
+                            <li style="color: #444; font-size: 0.85rem; margin-bottom: 3px;">Logistics •</li>
+                            <li style="color: #444; font-size: 0.85rem; margin-bottom: 3px;">ICD •</li>
+                            <li style="color: #444; font-size: 0.85rem;">Thương mại •</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right Bottom: CỰC PHÍA NAM PHÚ XUYÊN -->
+                <div class="diem-cuc popup-cuc" style="position: absolute; bottom: 15%; right: 25%; display: flex; align-items: center; flex-direction: row-reverse; z-index: 10;">
+                    <div style="width: 60px; height: 60px; background: #f9f1f9; border: 2px solid #5b2c6f; border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 2; position: relative; right: 20px;">
+                        <svg width="35" height="35" viewBox="0 0 24 24" fill="#5b2c6f"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.95); border: 2px solid #d7bde2; border-radius: 20px; padding: 15px 35px 15px 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); min-width: 180px; text-align: right;">
+                        <h3 style="color: #5b2c6f; font-size: 0.95rem; margin-bottom: 8px; font-weight: bold;">CỰC PHÍA NAM<br>PHÚ XUYÊN</h3>
+                        <ul style="list-style-type: none; padding: 0; margin: 0;">
+                            <li style="color: #444; font-size: 0.85rem; margin-bottom: 3px;">Công nghiệp công nghệ cao •</li>
+                            <li style="color: #444; font-size: 0.85rem;">Sân bay thứ hai •</li>
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="khoi-mo-dun" id="phan-doan-khong-gian-ngam" style="background: none; border: none; box-shadow: none; padding: 0; margin-top: 50px;">
+            <div style="display: flex; align-items: center; margin-bottom: 25px;">
+                <div style="width: 45px; height: 45px; border-radius: 50%; background-color: #2b5e2b; color: white; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; margin-right: 15px; flex-shrink: 0;">4</div>
+                <h2 style="font-size: 1.3rem; color: #2b5e2b; text-transform: uppercase; font-weight: bold; margin: 0; letter-spacing: 0.5px;">TỔ CHỨC KHÔNG GIAN NGẦM & ĐÔ THỊ ĐA CHIỀU</h2>
+            </div>
+            
+            <div style="width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.1); background: #fdfdfd; border: 1px solid #e0e0e0; display: flex; justify-content: center; align-items: center; padding: 0;">
+                <div style="position: relative; width: 100%; max-width: 900px;">
+                    <style>
+                        .box-ngam {
+                            position: absolute;
+                            left: 4%;
+                            width: 26%;
+                            max-width: 220px;
+                            min-width: 130px;
+                            background-color: #126330;
+                            color: white;
+                            padding: 15px;
+                            border-radius: 12px;
+                            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                            border: 2px solid #fff;
+                            z-index: 10;
+                            box-sizing: border-box;
+                            transition: all 0.3s ease;
+                            cursor: default;
+                        }
+                        .box-ngam:hover {
+                            transform: scale(1.05);
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                            z-index: 20;
+                            border-color: #ffd700; /* Viền vàng sáng lên khi hover */
+                        }
+                        .box-ngam h3 {
+                            font-size: 1.15rem;
+                            font-weight: 900;
+                            margin-bottom: 4px;
+                            line-height: 1.2;
+                            text-transform: capitalize;
+                        }
+                        .box-ngam span.depth {
+                            font-weight: normal;
+                            font-size: 0.85rem;
+                            display: block;
+                            margin-bottom: 8px;
+                            color: #e9f2eb;
+                            border-bottom: 1px solid rgba(255,255,255,0.3);
+                            padding-bottom: 8px;
+                        }
+                        .box-ngam ul {
+                            list-style-type: none;
+                            padding: 0;
+                            margin: 0;
+                        }
+                        .box-ngam li {
+                            font-size: 0.85rem;
+                            margin-bottom: 6px;
+                            line-height: 1.3;
+                            display: flex;
+                        }
+                        .box-ngam li::before {
+                            content: "•";
+                            margin-right: 6px;
+                        }
+                        .box-ngam .line-connect {
+                            position: absolute;
+                            right: -43%;
+                            top: 50%;
+                            width: 43%;
+                            height: 2px;
+                            background-color: #126330;
+                            z-index: -1;
+                            transition: all 0.3s ease;
+                        }
+                        .box-ngam:hover .line-connect {
+                            background-color: #ffd700;
+                        }
+                        @media (max-width: 768px) {
+                            .box-ngam {
+                                padding: 10px;
+                                border-radius: 8px;
+                                min-width: 110px;
+                            }
+                            .box-ngam h3 { font-size: 0.9rem; }
+                            .box-ngam span.depth { font-size: 0.75rem; padding-bottom: 5px; margin-bottom: 5px; }
+                            .box-ngam li { font-size: 0.75rem; margin-bottom: 4px; }
+                            .box-ngam .line-connect { right: -23%; width: 23%; }
+                        }
+                        @media (max-width: 480px) {
+                            .box-ngam { padding: 8px; left: 2%; width: 30%; }
+                            .box-ngam h3 { font-size: 0.8rem; }
+                            .box-ngam span.depth { font-size: 0.7rem; }
+                            .box-ngam li { font-size: 0.7rem; margin-bottom: 3px;}
+                        }
+                    </style>
+
+                    <img src="tuanham2.png" alt="Mặt cắt cấu trúc không gian ngầm" style="width: 100%; height: auto; display: block;">
+                    
+                    <!-- Box 1: TẦNG NÔNG -->
+                    <div class="box-ngam" style="top: 18%;">
+                        <h3>Tầng nông</h3>
+                        <span class="depth">(0m đến -15m)</span>
+                        <ul>
+                            <li>Không gian công cộng ngầm</li>
+                            <li>Thương mại, dịch vụ</li>
+                            <li>Bãi đỗ xe</li>
+                        </ul>
+                        <div class="line-connect"></div>
+                    </div>
+
+                    <!-- Box 2: TẦNG TRUNG -->
+                    <div class="box-ngam" style="top: 34%;">
+                        <h3>Tầng trung</h3>
+                        <span class="depth">(-15m đến -30m)</span>
+                        <ul>
+                            <li>Ga đường sắt đô thị</li>
+                            <li>Khu kỹ thuật phụ trợ</li>
+                            <li>Kho, logistics ngầm</li>
+                        </ul>
+                        <div class="line-connect"></div>
+                    </div>
+
+                    <!-- Box 3: TẦNG CẬN SÂU -->
+                    <div class="box-ngam" style="top: 51%;">
+                        <h3>Tầng cận sâu</h3>
+                        <span class="depth">(-30m đến -50m)</span>
+                        <ul>
+                            <li>Hạ tầng kỹ thuật chính</li>
+                            <li>Bể trữ nước ngầm</li>
+                            <li>An ninh, quốc phòng</li>
+                        </ul>
+                        <div class="line-connect"></div>
+                    </div>
+
+                    <!-- Box 4: TẦNG SÂU -->
+                    <div class="box-ngam" style="top: 68%;">
+                        <h3>Tầng sâu</h3>
+                        <span class="depth">(Dưới -50m)</span>
+                        <ul>
+                            <li>Không gian dự trữ chiến lược</li>
+                        </ul>
+                        <div class="line-connect"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Credit Footer -->
+        <div style="width: 100%; background-color: #126330; padding: 20px 0; margin-top: 50px; text-align: center; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <p style="color: white; font-size: 1.2rem; font-weight: 900; margin: 0; letter-spacing: 1.5px; text-transform: uppercase;">INFOGRAPHIC: THANH THÚY</p>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            /* --- LOGIC Ý 1: HIỆU ỨNG NHẢY SỐ TỰ ĐỘNG KHI CHẠM NÚT TỌA ĐỘ --- */
+            const cacNutToaDo = document.querySelectorAll('.nut-toa-do');
+            
+            cacNutToaDo.forEach(nut => {
+                nut.addEventListener('mouseenter', function() {
+                    const theSo = this.querySelector('.thau-kinh-so');
+                    if (!theSo) return;
+
+                    const mucTieu = parseInt(theSo.getAttribute('data-muc-tieu'));
+                    const donVi = theSo.getAttribute('data-don-vi') || '';
+                    const tienTo = theSo.getAttribute('data-tien-to') || '';
+                    
+                    let giaTriHienTai = 0;
+                    theSo.innerText = `${tienTo}0${donVi}`;
+                    
+                    if (this.boDem) clearInterval(this.boDem);
+                    
+                    this.boDem = setInterval(() => {
+                        if (giaTriHienTai >= mucTieu) {
+                            clearInterval(this.boDem);
+                            let hienThi = new Intl.NumberFormat('vi-VN').format(mucTieu);
+                            theSo.innerText = `${tienTo}${hienThi}${donVi}`;
+                        } else {
+                            giaTriHienTai += Math.ceil(mucTieu / 15);
+                            if (giaTriHienTai > mucTieu) giaTriHienTai = mucTieu;
+                            let hienThi = new Intl.NumberFormat('vi-VN').format(giaTriHienTai);
+                            theSo.innerText = `${tienTo}${hienThi}${donVi}`;
+                        }
+                    }, 40);
+                });
+            });
+
+            /* --- LOGIC Ý 2: TIMELINE TÀU HỎA CỦA CHIẾN LƯỢC --- */
+            const conTauP2 = document.getElementById('con-tau-phan-2');
+            const tuyenTauP2 = document.getElementById('tuyen-tau-phan-2');
+            const cacBoxP2 = document.querySelectorAll('.box-cl');
+
+            window.addEventListener('scroll', function() {
+                const phan2 = document.getElementById('phan-doan-giai-nghen');
+                if(!phan2) return;
+                const rect2 = phan2.getBoundingClientRect();
+                const chieuCaoCuaSo = window.innerHeight;
+                
+                if (rect2.top < chieuCaoCuaSo && rect2.bottom > 0) {
+                    const quangDuong = chieuCaoCuaSo - rect2.top;
+                    const tong = chieuCaoCuaSo + rect2.height;
+                    let p = (quangDuong / tong) * 120;
+                    if(p < 0) p = 0;
+                    if(p > 95) p = 95;
+                    
+                    if(conTauP2 && tuyenTauP2) {
+                        conTauP2.style.left = p + '%';
+                        tuyenTauP2.style.width = p + '%';
+                    }
+                    
+                    // Highlight box khi tàu chạy tới
+                    if(cacBoxP2.length > 0) {
+                        cacBoxP2.forEach(b => {
+                            b.style.borderColor = '#a8cfa8';
+                            b.style.boxShadow = '0 5px 15px rgba(0,0,0,0.05)';
+                        });
+                        
+                        if(p > 10 && p <= 35) {
+                            cacBoxP2[0].style.borderColor = '#126330';
+                            cacBoxP2[0].style.boxShadow = '0 8px 25px rgba(18,99,48,0.2)';
+                        }
+                        else if(p > 35 && p <= 60) {
+                            cacBoxP2[1].style.borderColor = '#126330';
+                            cacBoxP2[1].style.boxShadow = '0 8px 25px rgba(18,99,48,0.2)';
+                        }
+                        else if(p > 60 && p <= 85) {
+                            cacBoxP2[2].style.borderColor = '#126330';
+                            cacBoxP2[2].style.boxShadow = '0 8px 25px rgba(18,99,48,0.2)';
+                        }
+                        else if(p > 85) {
+                            cacBoxP2[3].style.borderColor = '#126330';
+                            cacBoxP2[3].style.boxShadow = '0 8px 25px rgba(18,99,48,0.2)';
+                        }
+                    }
+                }
+            });
+
+
+
+            /* --- LOGIC Ý 4: BẢN ĐỒ TỰ ĐỘNG POP-UP THÔNG TIN KHI CUỘN LƯỚT --- */
+            const cacDiemCuc = document.querySelectorAll('.popup-cuc');
+            const mapObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Cho hiện Sông Hồng đầu tiên (index 4 trong HTML, hoặc ta cứ để hiện tuần tự)
+                        // Hiện tuần tự các điểm cực
+                        cacDiemCuc.forEach((cuc, index) => {
+                            setTimeout(() => {
+                                cuc.classList.add('hien-lo');
+                            }, index * 250); 
+                        });
+                        // Hủy observe sau khi kích hoạt để giữ trạng thái hiện
+                        mapObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            const vungMap = document.getElementById('vung-kich-hoat-map');
+            if(vungMap) {
+                mapObserver.observe(vungMap);
+            }
+
+        });
+    </script>
+</body>
+</html>
